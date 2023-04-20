@@ -27,6 +27,7 @@ export const getServerSideProps: GetServerSideProps<{ ids: string[] }> = async (
 
 function Video({ ids }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	const [currId, setCurrId] = useState<string>(ids[0]);
+	const [fullscreen, setFullscreen] = useState<boolean>(false);
 	const [autoplay, setAutoplay] = useState<boolean>(false);
 	const [videos, setVideos] = useState(
 		ids.map((id) => ({
@@ -47,16 +48,23 @@ function Video({ ids }: InferGetServerSidePropsType<typeof getServerSideProps>) 
 			return newVideos;
 		});
 	};
+	const handleFullscreen = () => {
+		setFullscreen((prev) => !prev);
+	};
 	return (
 		<main className="flex gap-6 h-screen">
-			<ScrollArea className="w-60 border max-h-full p-1 gap-4 flex flex-col">
-				{videos.map((video) => (
-					<VideoThumbnail onChangeId={handleChangeId} key={video.id} id={video.id} />
-				))}
-			</ScrollArea>
-			<section className="flex-1">
+			{!fullscreen && (
+				<ScrollArea className="w-60 border max-h-full p-1 gap-4 flex flex-col">
+					{videos.map((video) => (
+						<VideoThumbnail onChangeId={handleChangeId} key={video.id} id={video.id} />
+					))}
+				</ScrollArea>
+			)}
+			<section className="flex-1 flex justify-center items-center">
 				{videos.map((video) => (
 					<VideoPlayer
+						onFullscreen={handleFullscreen}
+						fullscreen={fullscreen}
 						key={video.id}
 						onChangeId={handleChangeId}
 						isEnded={video.ended}
