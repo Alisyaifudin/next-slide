@@ -29,6 +29,12 @@ function Video({ ids }: InferGetServerSidePropsType<typeof getServerSideProps>) 
 	const [currId, setCurrId] = useState<string>(ids[0]);
 	const [fullscreen, setFullscreen] = useState<boolean>(false);
 	const [autoplay, setAutoplay] = useState<boolean>(false);
+	const filteredIds = ids.filter((id) => {
+		const cur = Number(currId.split(".")[0]);
+		const thisId = Number(id.split(".")[0]);
+		if (thisId < 2 + cur && thisId > cur -2) return true;
+		return false;
+	});
 	const [videos, setVideos] = useState(
 		ids.map((id) => ({
 			id,
@@ -61,21 +67,23 @@ function Video({ ids }: InferGetServerSidePropsType<typeof getServerSideProps>) 
 				</ScrollArea>
 			)}
 			<section className="flex-1 flex justify-center items-center">
-				{videos.map((video) => (
-					<VideoPlayer
-						onFullscreen={handleFullscreen}
-						fullscreen={fullscreen}
-						key={video.id}
-						onChangeId={handleChangeId}
-						isEnded={video.ended}
-						onEnded={handleEnded}
-						id={video.id}
-						next={next}
-						prev={prev}
-						autoplay={autoplay}
-						hidden={video.id !== currId}
-					/>
-				))}
+				{videos
+					.filter((v) => filteredIds.includes(v.id))
+					.map((video) => (
+						<VideoPlayer
+							onFullscreen={handleFullscreen}
+							fullscreen={fullscreen}
+							key={video.id}
+							onChangeId={handleChangeId}
+							isEnded={video.ended}
+							onEnded={handleEnded}
+							id={video.id}
+							next={next}
+							prev={prev}
+							autoplay={autoplay}
+							hidden={video.id !== currId}
+						/>
+					))}
 			</section>
 		</main>
 	);
