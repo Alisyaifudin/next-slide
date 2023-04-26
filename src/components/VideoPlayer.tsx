@@ -109,29 +109,6 @@ const VideoPlayer = ({
 	if (!isEnded && videoRef.current !== null) {
 		videoRef.current.currentTime = 0;
 	}
-	// return fullscreen ? (
-	// <div className={cn("w-full h-screen justify-center relative", hidden ? "hidden" : "flex")}>
-	// 	<video
-	// 		className="h-full"
-	// 		onEnded={handleEnded}
-	// 		ref={videoRef}
-	// 		src={`/assets/${id}`}
-	// 		onClick={handleClick}
-	// 	/>
-	// <button
-	// 	className="border absolute bottom-1 left-2 rounded-lg p-2 disabled:border-zinc-500 disabled:text-zinc-500"
-	// 	onClick={handleBack}
-	// 	disabled={!prev && !isEnded}
-	// >
-	// 	<ChevronLeft />
-	// </button>
-	// <button
-	// 	onClick={handleFullscreen}
-	// 	className="border absolute bottom-1 right-2 rounded-lg p-2 disabled:border-zinc-500 disabled:text-zinc-500"
-	// >
-	// 	<Shrink />
-	// </button>
-	// </div>
 	return (
 		<div
 			className={cn(
@@ -141,9 +118,14 @@ const VideoPlayer = ({
 				hidden ? "hidden" : "flex"
 			)}
 		>
-			<div className="w-full max-w-[1500px] justify-center flex items-center aspect-video">
+			<div
+				className={cn(
+					"w-full justify-center flex items-center aspect-video",
+					!fullscreen ? "max-w-[1500px]" : null
+				)}
+			>
 				<video
-					className="w-full "
+					className="w-full"
 					onEnded={handleEnded}
 					ref={videoRef}
 					src={`/assets/${id}`}
