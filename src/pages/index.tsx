@@ -8,6 +8,7 @@ import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import VideoThumbnail from "@/components/VideoThumbnail";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export const getServerSideProps: GetServerSideProps<{ ids: string[] }> = async (context) => {
 	// read the assets files names from @/assets/*
@@ -32,7 +33,7 @@ function Video({ ids }: InferGetServerSidePropsType<typeof getServerSideProps>) 
 	const filteredIds = ids.filter((id) => {
 		const cur = Number(currId.split(".")[0]);
 		const thisId = Number(id.split(".")[0]);
-		if (thisId < 2 + cur && thisId > cur -2) return true;
+		if (thisId < 2 + cur && thisId > cur - 2) return true;
 		return false;
 	});
 	const [videos, setVideos] = useState(
@@ -70,19 +71,20 @@ function Video({ ids }: InferGetServerSidePropsType<typeof getServerSideProps>) 
 				{videos
 					.filter((v) => filteredIds.includes(v.id))
 					.map((video) => (
-						<VideoPlayer
-							onFullscreen={handleFullscreen}
-							fullscreen={fullscreen}
-							key={video.id}
-							onChangeId={handleChangeId}
-							isEnded={video.ended}
-							onEnded={handleEnded}
-							id={video.id}
-							next={next}
-							prev={prev}
-							autoplay={autoplay}
-							hidden={video.id !== currId}
-						/>
+						<ErrorBoundary key={video.id} fallback={<div className="hidden" />}>
+							<VideoPlayer
+								onFullscreen={handleFullscreen}
+								fullscreen={fullscreen}
+								onChangeId={handleChangeId}
+								isEnded={video.ended}
+								onEnded={handleEnded}
+								id={video.id}
+								next={next}
+								prev={prev}
+								autoplay={autoplay}
+								hidden={video.id !== currId}
+							/>
+						</ErrorBoundary>
 					))}
 			</section>
 		</main>
