@@ -63,7 +63,12 @@ function Video({ ids }: InferGetServerSidePropsType<typeof getServerSideProps>) 
 			{!fullscreen && (
 				<ScrollArea className="w-60 border max-h-full p-1 gap-4 flex flex-col">
 					{videos.map((video) => (
-						<VideoThumbnail onChangeId={handleChangeId} key={video.id} id={video.id} />
+						<VideoThumbnail
+							current={video.id === currId}
+							onChangeId={handleChangeId}
+							key={video.id}
+							id={video.id}
+						/>
 					))}
 				</ScrollArea>
 			)}
